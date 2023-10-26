@@ -3,9 +3,11 @@ import * as z from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RecipeForm, recipeSchema } from "@/models/Recipe";
-
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const CreateRecipe = () => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -15,9 +17,9 @@ const CreateRecipe = () => {
     resolver: zodResolver(recipeSchema),
   });
 
-  const onSubmit: SubmitHandler<RecipeForm> = (data) => {
-    console.log(data.title);
-    console.log(data);
+  const onSubmit: SubmitHandler<RecipeForm> = async (data) => {
+    await axios.post("/api/recipes", data);
+    router.push("/recipes");
   };
 
   return (
@@ -36,14 +38,20 @@ const CreateRecipe = () => {
             <label htmlFor="ingredient">Ingredient Name</label>
             <input id="ingredient" type="text" {...register("ingredient")} placeholder="Ingredient Name" />
             {errors.ingredient && (
-              <p className="bg-yellow-100 text-red-500 italic px-2 py-1 rounded-md self-start">{errors.ingredient?.message}</p>
+              <p className="bg-yellow-100 text-red-500 italic px-2 py-1 rounded-md self-start">
+                {errors.ingredient?.message}
+              </p>
             )}
             <label htmlFor="instructions">Instructions:</label>
             <input id="instructions" type="text" {...register("instructions")} placeholder="Instructions" />
             {errors.instructions && (
-              <p className="bg-yellow-100 text-red-500 italic px-2 py-1 rounded-md self-start">{errors.instructions?.message}</p>
+              <p className="bg-yellow-100 text-red-500 italic px-2 py-1 rounded-md self-start">
+                {errors.instructions?.message}
+              </p>
             )}
-            <button type="submit" className="text-3xl bg-lime-300 p-2 rounded-md max-w-[10rem]">Submit</button>
+            <button type="submit" className="text-3xl bg-lime-300 p-2 rounded-md max-w-[10rem]">
+              Submit
+            </button>
           </div>
         </form>
       </div>
