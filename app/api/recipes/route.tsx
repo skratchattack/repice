@@ -4,11 +4,12 @@ import prisma from "@/prisma/client";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
+  console.log(body)
   const validation = recipeSchema.safeParse(body);
-  if (!validation.success) return NextResponse.json(validation.error.errors, { status: 400 });
+  if (!validation.success) return NextResponse.json(validation.error.format(), { status: 400 });
 
   const newRecipe = await prisma.recipe.create({
-    data: { title: body.title, ingredient: body.ingredient, instructions: body.instructions },
+    data: { title: body.title, ingredients: body.ingredientLine, instructions: body.instructions },
   });
 
   return NextResponse.json(newRecipe, { status: 201 });
