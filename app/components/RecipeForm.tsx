@@ -11,6 +11,7 @@ const NewRecipeForm = () => {
     register,
     handleSubmit,
     control,
+    trigger,
     formState: { errors },
   } = useForm<RecipeForm>({
     resolver: zodResolver(recipeSchema),
@@ -22,8 +23,9 @@ const NewRecipeForm = () => {
     name: "ingredientLine",
   });
 
-  const onSubmit: SubmitHandler<RecipeForm> = async (data) => {
-    console.log(data)
+  const onSubmit: SubmitHandler<RecipeForm> = async (data, event) => {
+    event?.preventDefault();
+    console.log(data);
     try {
       await axios.post("/api/recipes", data);
       router.push("/recipes");
@@ -32,12 +34,10 @@ const NewRecipeForm = () => {
     }
   };
 
-  const handleKeyDown = (e: { key: string; preventDefault: () => void }) => {
+  const handleKeyDown = (e: { key: string; }) => {
     if (e.key === "Enter") {
       // append({ ingredientName: "", ingredientAmount: 0, ingredientMeasurementUnit: "" })
-      append(
-        { ingredientName: "", ingredientAmount: "", ingredientMeasurementUnit: "" },
-      );
+      append({ ingredientName: "", ingredientAmount: "", ingredientMeasurementUnit: "" });
     }
   };
 
@@ -53,9 +53,9 @@ const NewRecipeForm = () => {
             )}
             <div>
               {fields.map((field, index) => {
-                  return (
-                      <div key={field.id}>
-                      <label >Ingredient Name</label>
+                return (
+                  <div key={field.id}>
+                    <label>Ingredient Name</label>
                     <input type="text" {...register(`ingredientLine.${index}.ingredientName`)}></input>
                     <input type="text" {...register(`ingredientLine.${index}.ingredientAmount`)}></input>
                     <input
@@ -75,7 +75,7 @@ const NewRecipeForm = () => {
               </p>
             )}
 
-            <button type="submit" className="text-3xl bg-lime-300 p-2 rounded-md max-w-[10rem]">
+            <button type="button" className="text-3xl bg-lime-300 p-2 rounded-md max-w-[10rem]" onClick={handleSubmit(onSubmit)}>
               Submit
             </button>
           </div>

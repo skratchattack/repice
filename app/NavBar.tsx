@@ -9,11 +9,11 @@ import { GiSlicedBread } from "react-icons/gi";
 
 const Navbar = () => {
   return (
-    <nav className="border-b mb-5 px-5 h-14 py-3">
+    <nav className="border-b mb-5 px-5 h-14 py-3 bg-slate-100">
       <Flex justify="between">
         <Flex align="center" gap="3">
-          <Link href="/">
-            <GiSlicedBread size={30} />
+          <Link href="/" className="mr-7">
+            <GiSlicedBread size={36} />
           </Link>
             <NavLinks />
         </Flex>
