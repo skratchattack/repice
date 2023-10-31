@@ -2,10 +2,10 @@
 import NewRecipeForm from "@/app/components/RecipeForm";
 
 const CreateRecipe = () => {
-
-
   return (
-   <NewRecipeForm />
+    <div>
+      <NewRecipeForm />
+    </div>
   );
 };
 

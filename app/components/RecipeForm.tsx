@@ -1,9 +1,10 @@
 "use client";
 import { SubmitHandler, useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RecipeForm, recipeSchema, recipeSchemaDefaultValues } from "@/models/Recipe";
+import { RecipeSchema, RecipeForm, recipeSchemaDefaultValues } from "@/models/Recipe";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const NewRecipeForm = () => {
   const router = useRouter();
@@ -11,35 +12,39 @@ const NewRecipeForm = () => {
     register,
     handleSubmit,
     control,
-    trigger,
     formState: { errors },
   } = useForm<RecipeForm>({
-    resolver: zodResolver(recipeSchema),
+    resolver: zodResolver(RecipeSchema),
     defaultValues: recipeSchemaDefaultValues,
   });
 
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormContext)
-    name: "ingredientLine",
+  const { fields, append } = useFieldArray({
+    control,
+    name: "ingredients",
   });
 
   const onSubmit: SubmitHandler<RecipeForm> = async (data, event) => {
+    console.log(`RecipeForm Data: ${data}`);
     event?.preventDefault();
-    console.log(data);
     try {
       await axios.post("/api/recipes", data);
       router.push("/recipes");
+      router.refresh();
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleKeyDown = (e: { key: string; }) => {
+  const handleKeyDown = (e: { key: string }) => {
     if (e.key === "Enter") {
-      // append({ ingredientName: "", ingredientAmount: 0, ingredientMeasurementUnit: "" })
-      append({ ingredientName: "", ingredientAmount: "", ingredientMeasurementUnit: "" });
+      append({
+        ingredientName: "",
+        ingredientAmount: "",
+        ingredientMeasurementUnit: "",
+      });
     }
   };
+  const onInvalid = (errors: any) => console.error(`from onInvalid ${errors}`);
 
   return (
     <>
@@ -56,11 +61,11 @@ const NewRecipeForm = () => {
                 return (
                   <div key={field.id}>
                     <label>Ingredient Name</label>
-                    <input type="text" {...register(`ingredientLine.${index}.ingredientName`)}></input>
-                    <input type="text" {...register(`ingredientLine.${index}.ingredientAmount`)}></input>
+                    <input type="text" {...register(`ingredients.${index}.ingredientName`)}></input>
+                    <input type="text" {...register(`ingredients.${index}.ingredientAmount`)}></input>
                     <input
                       type="text"
-                      {...register(`ingredientLine.${index}.ingredientMeasurementUnit`)}
+                      {...register(`ingredients.${index}.ingredientMeasurementUnit`)}
                       onKeyDown={handleKeyDown}
                     ></input>
                   </div>
@@ -75,7 +80,11 @@ const NewRecipeForm = () => {
               </p>
             )}
 
-            <button type="button" className="text-3xl bg-lime-300 p-2 rounded-md max-w-[10rem]" onClick={handleSubmit(onSubmit)}>
+            <button
+              type="button"
+              className="text-3xl bg-lime-300 p-2 rounded-md max-w-[10rem]"
+              onClick={handleSubmit(onSubmit, onInvalid)}
+            >
               Submit
             </button>
           </div>
@@ -86,3 +95,5 @@ const NewRecipeForm = () => {
 };
 
 export default NewRecipeForm;
+
+// When writing up a recipe, then you should see some autocomplete options in the ingredientName field that represents your ingredientList, so you can link then up to your recipes. Choosing them is optional, if you don't choose any then it will be treaded as a neutral string, otherwise it should be synced to that ingredient that was chosen. That way you can get more features to your recipe like price and nutritional value.

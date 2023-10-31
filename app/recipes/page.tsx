@@ -1,6 +1,8 @@
 import prisma from "@/prisma/client";
 import { Table } from "@radix-ui/themes";
 import React from "react";
+import DndPage from "../components/DndPage";
+
 
 
 const RecipeCollection = async () => {
@@ -20,6 +22,7 @@ const RecipeCollection = async () => {
         </Table.Row>))}
       </Table.Body>
     </Table.Root>
+
   </div>;
 };
 

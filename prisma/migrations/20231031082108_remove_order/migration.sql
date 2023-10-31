@@ -1,22 +1,25 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE `Recipe` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(255) NOT NULL,
+    `instructions` TEXT NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
-  - You are about to drop the column `ingredient` on the `Recipe` table. All the data in the column will be lost.
-
-*/
--- AlterTable
-ALTER TABLE `Recipe` DROP COLUMN `ingredient`;
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Ingredients` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `ingredientName` VARCHAR(191) NOT NULL,
-    `ingredientAmount` INTEGER NOT NULL,
+    `ingredientAmount` VARCHAR(191) NOT NULL,
     `ingredientMeasurementUnit` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `ingredientId` INTEGER NOT NULL,
 
+    INDEX `Ingredients_ingredientId_fkey`(`ingredientId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

@@ -1,27 +1,23 @@
 import * as z from "zod";
 
-export const recipeSchema = z.object({
-  title: z.string().default(""),
-  ingredientLine: z.array(
-    z.object({
-      ingredientName: z.string().max(30).default(""),
-      ingredientAmount: z.string().min(0).default(""),
-      ingredientMeasurementUnit: z.string().default(""),
-    })
-  ),
-  instructions: z.string().default("")
+const IngredientsSchema = z.object({
+  ingredientName: z.string(),
+  ingredientAmount: z.string(),
+  ingredientMeasurementUnit: z.string(),
 });
 
-export const recipeSchemaDefaultValues = {
-  title: "",
-  ingredientLine: [
-    {
-      ingredientName: "",
-      ingredientAmount: "",
-      ingredientMeasurementUnit: "",
-    }]
-  ,
-  instructions: ""
+const RecipeSchema = z.object({
+  title: z.string().min(1).max(30),
+  instructions: z.string(),
+  ingredients: z.array(IngredientsSchema),
+});
+
+const recipeSchemaDefaultValues = {
+  ingredientName: "",
+  ingredientAmount: "",
+  ingredients: [{ ingredientName: "", ingredientAmount: "", ingredientMeasurementUnit: "" }],
+  ingredientMeasurementUnit: "",
 };
 
-export type RecipeForm = z.infer<typeof recipeSchema>;
+export { RecipeSchema, IngredientsSchema, recipeSchemaDefaultValues };
+export type RecipeForm = z.infer<typeof RecipeSchema>;
