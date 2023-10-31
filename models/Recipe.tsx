@@ -21,3 +21,4 @@ const recipeSchemaDefaultValues = {
 
 export { RecipeSchema, IngredientsSchema, recipeSchemaDefaultValues };
 export type RecipeForm = z.infer<typeof RecipeSchema>;
+export type IngredientForm = z.infer<typeof IngredientsSchema>;
