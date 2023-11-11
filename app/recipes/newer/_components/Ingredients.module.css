@@ -1,0 +1,50 @@
+.ingredientAmount {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+  margin-top: 10px;
+  margin-left: 2px;
+  width: 10rem;
+}
+.ingredientUnit {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+  margin-top: 10px;
+  margin-left: 2px;
+  width: 3.5rem;
+}
+
+.ingredientName {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+  margin-top: 10px;
+  margin-left: 2px;
+  width: 30rem;
+}
+
+.ingredientWrap label {
+  position: absolute;
+  display: block; /* Ensures that each label is on a new line */
+  margin-left: 7px;
+  font-size: 13px; /* Adjust the font size */
+  color: #333; /* Adjust the text color */
+  background-color: white;
+  padding-inline: 5px;
+}
+
+.ingredientWrap {
+    display: flex;
+}
+
+.addButton {
+  position: relative;
+  top: 3px;
+  left: 10px;
+  color: rgba(0, 0, 255, 0.600);
+}
+
+.addButton:hover {
+  color: blue;
+}
