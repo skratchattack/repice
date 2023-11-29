@@ -1,46 +1,58 @@
 "use client";
-import { useForm } from "react-hook-form";
 import styles from "./Ingredients.module.css";
 import { IoMdAddCircle } from "react-icons/io";
-
-
-interface Ingredient {
-  id: string;
-  ingredientName: string;
-  ingredientAmount: number;
-  ingredientMeasurementUnit: string;
-}
+import { useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { RecipeForm } from "@/models/Recipe";
 
 interface IngredientComponentProps {
-  onIngredientSubmit: (data: Ingredient) => void;
+  onIngredientSubmit: (data: RecipeForm) => void;
 }
 
 const IngredientComponent = ({ onIngredientSubmit }: IngredientComponentProps) => {
-  const { register, handleSubmit } = useForm<Ingredient>();
+  const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
 
-  const appendIngredient = (data: Ingredient) => {
+    const newIngredient: RecipeForm = {
+      ingredients: [
+        {
+          id: uuidv4(),
+          ingredientName: ingredientNameRef.current?.value || "",
+          ingredientAmount: ingredientAmountRef.current?.value || "",
+          ingredientMeasurementUnit: ingredientUnitRef.current?.value || "",
+        },
+      ],
+    };
+    appendIngredient(newIngredient);
+  };
+
+  const ingredientNameRef = useRef<HTMLInputElement>(null);
+  const ingredientAmountRef = useRef<HTMLInputElement>(null);
+  const ingredientUnitRef = useRef<HTMLInputElement>(null);
+
+  const appendIngredient = (data: RecipeForm) => {
     onIngredientSubmit(data);
   };
 
   return (
-    <form onSubmit={handleSubmit(appendIngredient)} className={styles.ingredientWrap}>
+    <div className={styles.ingredientWrap}>
       <div>
         <label htmlFor="ingredientName">Ingredient Name</label>
-        <input type="text" className={styles.ingredientName} {...register("ingredientName")} />
+        <input type="text" className={styles.ingredientName} ref={ingredientNameRef} />
       </div>
       <div>
         <label htmlFor="ingredientAmount">Amount</label>
-        <input type="number" className={styles.ingredientAmount} {...register("ingredientAmount")} />
+        <input type="number" className={styles.ingredientAmount} ref={ingredientAmountRef} />
       </div>
       <div>
         <label htmlFor="ingredientUnit">Unit</label>
-        <input type="text" className={styles.ingredientUnit} {...register("ingredientMeasurementUnit")} />
+        <input type="text" className={styles.ingredientUnit} ref={ingredientUnitRef} />
       </div>
-      <button type="submit" ><IoMdAddCircle size={23} className={styles.addButton} /></button>
-    </form>
+      <button type="button" onClick={handleButtonClick}>
+        <IoMdAddCircle size={23} className={styles.addButton} />
+      </button>
+    </div>
   );
 };
 
 export default IngredientComponent;
-
-

@@ -1,0 +1,6 @@
+.contentEditable {
+    height: 300px;
+    width: 300px;
+    padding: 0 8px;
+    border: 1px solid black;
+}

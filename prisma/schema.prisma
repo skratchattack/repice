@@ -10,14 +10,14 @@ datasource db {
 model Recipe {
   id           Int           @id @default(autoincrement())
   title        String        @db.VarChar(255)
-  instructions String        @db.Text
+  instructions Instructions[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   ingredients  Ingredients[]
 }
 
 model Ingredients {
-  id                        Int      @id @default(autoincrement())
+  id                        String  @id @default(uuid())
   ingredientName            String
   ingredientAmount          String
   ingredientMeasurementUnit String
@@ -27,4 +27,15 @@ model Ingredients {
   recipe                    Recipe   @relation(fields: [ingredientId], references: [id])
 
   @@index([ingredientId], map: "Ingredients_ingredientId_fkey")
+}
+
+model Instructions {
+  id         String   @id @default(uuid())
+  stepText   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  instructionId   Int
+  recipe     Recipe   @relation(fields: [instructionId], references: [id])
+
+  @@index([instructionId], map: "Instructions_instructionId_fkey")
 }

@@ -1,24 +1,18 @@
 "use client";
 import styles from "./IngredientDisplay.module.css";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { DragDropContext, Draggable } from "@hello-pangea/dnd";
 import { StrictModeDroppable } from "./StrictModeDroppable";
 import IngredientComponent from "./Ingredients";
-import { v4 as uuidv4 } from "uuid";
+import { RecipeForm } from "@/models/Recipe";
 import { MdDragIndicator } from "react-icons/md";
 import { TiDelete } from "react-icons/ti";
-
-
-interface Ingredient {
-  id: string;
-  ingredientName: string;
-  ingredientAmount: number;
-  ingredientMeasurementUnit: string;
-}
+import { useForm } from "react-hook-form";
 
 const IngredientDisplay = () => {
-  const [ingredientList, setIngredientList] = useState<Ingredient[]>([]);
+  const [ingredientList, setIngredientList] = useState<RecipeForm[]>([]);
   const [order, setOrder] = useState(ingredientList);
+  const { register, handleSubmit, control, getValues } = useForm<RecipeForm>();
 
   useEffect(() => {
     setOrder(ingredientList);
@@ -36,69 +30,80 @@ const IngredientDisplay = () => {
     setOrder(items);
   }
 
-  const addIngredient = (newIngredient: Ingredient) => {
-    const ingredientWithId = {
-      ...newIngredient,
-      id: uuidv4(),
-    };
-
-    setIngredientList((prevList) => [...prevList, ingredientWithId]);
+  const addIngredient = (newIngredient: RecipeForm) => {
+    setIngredientList([...ingredientList, newIngredient]);
   };
 
   return (
     <div className={styles.ingredientListContainer}>
-      <IngredientComponent onIngredientSubmit={addIngredient} />
       <h2>Ingredients</h2>
-      <DragDropContext onDragEnd={handleOnDragEnd}>
-        <StrictModeDroppable droppableId="ingredients">
-          {(provided) => (
-            <ul className={styles.ingredientList} {...provided.droppableProps} ref={provided.innerRef}>
-              {order.map((ingredient, index) => (
-                <Draggable key={ingredient.id} draggableId={ingredient.id} index={index}>
-                  {(provided, snapshot) => (
-                    <li
-                      key={ingredient.id}
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      className={`${
-                        snapshot.isDragging ? styles.ingredientListItemBeingDragged : styles.ingredientListItem
-                      }`}
-                    >
-                      <div className={styles.buttons}>
-                        <MdDragIndicator size={23} />
-                      </div>
-                      <input type="text" defaultValue={ingredient.ingredientName} className={styles.ingredientName} />
-                      <input type="number" defaultValue={ingredient.ingredientAmount} className={styles.ingredientAmount} />
-                      <input
-                        type="text"
-                        defaultValue={ingredient.ingredientMeasurementUnit}
-                        className={styles.ingredientUnits}
-                      />
-                      <div className={styles.buttons}>
-                        {!snapshot.isDragging && (
-                          <button
-                            className={styles.deleteButton}
-                            onClick={() => {
-                              setIngredientList(
-                                ingredientList.filter((ingredientItem) => ingredientItem.id !== ingredient.id)
-                              );
-                            }}
-                            type="button"
-                          >
-                            <TiDelete size={21} className={styles.deleteIcon} />
-                          </button>
-                        )}
-                      </div>
-                    </li>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </ul>
-          )}
-        </StrictModeDroppable>
-      </DragDropContext>
+      <form>
+        <DragDropContext onDragEnd={handleOnDragEnd}>
+          <StrictModeDroppable droppableId="ingredients">
+            {(provided) => (
+              <ul className={styles.ingredientList} {...provided.droppableProps} ref={provided.innerRef}>
+                {order.map((ingredient, index) => (
+                  <Draggable
+                    key={ingredient.ingredients[index].id}
+                    draggableId={ingredient.ingredients[index].id}
+                    index={index}
+                  >
+                    {(provided, snapshot) => (
+                      <li
+                        key={ingredient.ingredients[index].id}
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        className={`${
+                          snapshot.isDragging ? styles.ingredientListItemBeingDragged : styles.ingredientListItem
+                        }`}
+                      >
+                        <div className={styles.buttons}>
+                          <MdDragIndicator size={23} />
+                        </div>
+                        <input
+                          type="text"
+                          defaultValue={ingredient.ingredients[index].ingredientName}
+                          className={styles.ingredientName}
+                        />
+                        <input
+                          type="number"
+                          defaultValue={ingredient.ingredients[index].ingredientAmount}
+                          className={styles.ingredientAmount}
+                        />
+                        <input
+                          type="text"
+                          defaultValue={ingredient.ingredients[index].ingredientMeasurementUnit}
+                          className={styles.ingredientUnits}
+                        />
+                        <div className={styles.buttons}>
+                          {!snapshot.isDragging && (
+                            <button
+                              className={styles.deleteButton}
+                              onClick={() => {
+                                setIngredientList(
+                                  ingredientList.filter(
+                                    (ingredientItem) =>
+                                      ingredientItem.ingredients[index].id !== ingredient.ingredients[index].id
+                                  )
+                                );
+                              }}
+                              type="button"
+                            >
+                              <TiDelete size={21} className={styles.deleteIcon} />
+                            </button>
+                          )}
+                        </div>
+                      </li>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </ul>
+            )}
+          </StrictModeDroppable>
+        </DragDropContext>
+      </form>
     </div>
   );
 };

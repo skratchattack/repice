@@ -75,14 +75,14 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TiDelete } from "react-icons/ti";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { useState } from "react";
-import styles from './page.module.css'
+import styles from "./page.module.css";
 
 const RecipeFormPage = () => {
   const list = [{ id: "0" }, { id: "1" }, { id: "2" }, { id: "3" }, { id: "4" }];
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState("");
   const router = useRouter();
   const { register, handleSubmit, control, getValues, setFocus } = useForm<RecipeForm>({
     resolver: zodResolver(RecipeSchema),
@@ -106,23 +106,22 @@ const RecipeFormPage = () => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter" && e.shiftKey) {
-          append({
-              ingredientName: "",
-              ingredientAmount: "",
-              ingredientMeasurementUnit: "",
-            });
-        }
-        else if (e.key === "Enter") {
-        e.preventDefault();
-            setFocus('instructions')
+    if (e.key === "Enter" && e.shiftKey) {
+      append({
+        id: "",
+        ingredientName: "",
+        ingredientAmount: "",
+        ingredientMeasurementUnit: "",
+      });
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      setFocus("instructions");
     }
   };
 
   const handleIngredientFieldEnterKey = (e: { key: string }) => {
     const ingredientNameValue = getValues("ingredients.0.ingredientName");
     if (!ingredientNameValue && e.key === "Enter") {
-
     }
   };
   const onInvalid = (data: any) => console.error(data);
@@ -175,7 +174,9 @@ const RecipeFormPage = () => {
         <Controller
           name="instructions"
           control={control}
-          render={({ field: {ref, ...field} }) => <ReactQuill theme='snow' className={styles.qlEditor} ref={ref} {...field} />}
+          render={({ field: { ref, ...field } }) => (
+            <ReactQuill theme="snow" className={styles.qlEditor} ref={ref} {...field} />
+          )}
         />
 
         <Button type="button" size="4" onClick={handleSubmit(onSubmit, onInvalid)}>
